@@ -16,7 +16,7 @@ processes payments, and sends notifications — all secured with JWT and
 fully containerized with Docker.
 
 **Source code available upon request for verified employers.**  
-📧 your@email.com | [LinkedIn](https://linkedin.com/in/yourprofile)
+📧 abdelrahman.heissa1@gmail.com | [LinkedIn](https://www.linkedin.com/in/abdulrahman-hassan-b60110203 )
 
 </div>
 
