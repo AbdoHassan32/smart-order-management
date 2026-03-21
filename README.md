@@ -290,9 +290,8 @@ com.smartorders.<service>/
 
 Interested in the source code or working together?
 
-📧 your@email.com  
-💼 [LinkedIn](https://linkedin.com/in/yourprofile)  
-🐙 [GitHub](https://github.com/yourusername)
+📧 abdelrahman.heissa1@gmail.com  
+💼 [LinkedIn](https://www.linkedin.com/in/abdulrahman-hassan-b60110203)  
 
 ---
 
