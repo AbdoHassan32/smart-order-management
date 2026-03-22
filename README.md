@@ -25,16 +25,20 @@ fully containerized with Docker.
 ## 📸 Screenshots
 
 ### All 9 Services Running in Docker
-![Docker Compose](screenshots/docker-compose-running.png)
+![Docker Compose](screenshots/Docker-Disktop.JPG)
 
 ### Eureka Service Registry — All Services Registered
-![Eureka Dashboard](screenshots/eureka-dashboard.png)
+![Eureka Dashboard](screenshots/Eureka-Server.JPG)
 
-### Swagger UI — Customer Service API
-![Swagger UI](screenshots/swagger-ui.png)
+### Swagger UI — Inventory Service API
+![Swagger UI](screenshots/Inventory-Service.JPG)
 
 ### Order Confirmed — Full Flow Response
-![Order Confirmed](screenshots/order-confirmed.png)
+![Make a User](screenshots/Register-User.JPG)
+![Create a Customer](screenshots/create-a-customer.JPG)
+![Create a Product](screenshots/create-a-product.JPG)
+![Order Confirmed](screenshots/make-an-order.JPG)
+![Get Notification Of Order](screenshots/get-a-notification-for-order.JPG)
 
 ---
 
