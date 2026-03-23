@@ -1,0 +1,7 @@
+.idea/
+**/target/
+*.log
+.env
+**/application-local.properties
+**/application-local.yml
+order-service/src/main/resources/application-docker.properties~

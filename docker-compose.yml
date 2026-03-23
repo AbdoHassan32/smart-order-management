@@ -1,0 +1,210 @@
+version: '3.8'
+
+services:
+
+  # ── PostgreSQL ────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - smartorders-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Eureka Server ─────────────────────────────────────────────────────────
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - smartorders-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 120s
+
+  # ── Config Server ─────────────────────────────────────────────────────────
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker,native
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - smartorders-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 120s
+
+  # ── API Gateway ───────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - smartorders-network
+
+  # ── Auth Service ──────────────────────────────────────────────────────────
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - smartorders-network
+
+  # ── Customer Service ──────────────────────────────────────────────────────
+  customer-service:
+    build:
+      context: ./customer-service
+      dockerfile: Dockerfile
+    container_name: customer-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - smartorders-network
+
+  # ── Inventory Service ─────────────────────────────────────────────────────
+  inventory-service:
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile
+    container_name: inventory-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - smartorders-network
+
+  # ── Order Service ─────────────────────────────────────────────────────────
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - smartorders-network
+
+  # ── Payment Service ───────────────────────────────────────────────────────
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - smartorders-network
+
+  # ── Notification Service ──────────────────────────────────────────────────
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - smartorders-network
+
+networks:
+  smartorders-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
